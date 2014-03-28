@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using VPSeminarska.Abstracts.Interfaces;
 
 namespace VPSeminarska.Abstracts
 {
@@ -12,11 +13,13 @@ namespace VPSeminarska.Abstracts
     {
         public Graphics Graphics { get; set; }
         public Form Form { get; set; }
-        List<Command> Commands { get; set; }
+        public List<Command> Commands { get; set; }
+        public Scene Scene { get; set; }
 
-        public GameObject(Form Form)
+        public GameObject(Form Form, Scene Scene)
         {
             this.Form = Form;
+            this.Scene = Scene;
             Commands = new List<Command>();
             BindEvents();
         }

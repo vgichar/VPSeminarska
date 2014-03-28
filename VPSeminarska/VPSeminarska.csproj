@@ -46,12 +46,18 @@
   <ItemGroup>
     <Compile Include="Abstracts\Command.cs" />
     <Compile Include="Abstracts\GameObject.cs" />
-    <Compile Include="Abstracts\ICListener.cs" />
+    <Compile Include="Abstracts\Interfaces\ICListener.cs" />
     <Compile Include="Abstracts\Scene.cs" />
+    <Compile Include="GameLogic\Player\Commands\ColisionDetectionCommand.cs" />
+    <Compile Include="GameLogic\Player\Commands\MovementCommand.cs" />
     <Compile Include="GameLogic\Player\PlayerGameObject.cs" />
     <Compile Include="GameLogic\Scene1.cs" />
+    <Compile Include="GameLogic\SceneItems\LineGameObject.cs" />
+    <Compile Include="Libraries\MathLib\Circle.cs" />
+    <Compile Include="Libraries\MathLib\Line2D.cs" />
+    <Compile Include="Libraries\MathLib\MathTest.cs" />
     <Compile Include="Libraries\Time.cs" />
-    <Compile Include="Libraries\Vector2D.cs" />
+    <Compile Include="Libraries\MathLib\Vector2D.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>

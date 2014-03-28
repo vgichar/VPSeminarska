@@ -7,59 +7,45 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using VPSeminarska.Abstracts;
 using VPSeminarska.Libraries;
+using VPSeminarska.Libraries.MathLib;
 
 namespace VPSeminarska.GameLogic.Player
 {
     public class PlayerGameObject : GameObject
     {
-        public Point Position { get; set; }
-        public Size Size { get; set; }
+        public const double Gravity = 2000;
+        public Circle Circle { get; set; }
+        public bool InAir { get; set; }
+        public bool UseGravity { get; set; }
+        public double Mass { get; set; }
 
-        public double Speed;
-        public Vector2D MoveDirection;
+        public Vector2D Speed { get; set; }
+        public Vector2D MoveDirection { get; set; }
 
-        public PlayerGameObject(Form f)
-            : base(f)
+        public PlayerGameObject(Form f, Scene Scene)
+            : base(f, Scene)
         {
-            Position = new Point(100, 100);
-            Size = new Size(30, 30);
-            Speed = 20;
+            Circle = new Circle(new Point(0, 0), 25);
+            Speed = new Vector2D(300, 500);
             MoveDirection = new Vector2D(0, 0);
+            InAir = true;
         }
 
         public override void Paint(Graphics g, System.Windows.Forms.Form f)
         {
             base.Paint(g, f);
 
-            Position = (MoveDirection * Speed + Position).ToPoint();
-            Point PositionCenter = Position;
-            PositionCenter.X -= Size.Width;
-            PositionCenter.Y -= Size.Height;
+            Circle.Center = ((MoveDirection * Time.deltaTime) + Circle.Center).GetPointF();
 
-            g.FillEllipse(Brushes.Purple, new Rectangle(PositionCenter, Size));
+            Size Size1 = new Size((int)Circle.Radius * 2, (int)Circle.Radius * 2);
+
+            Point PositionCenter1 = new Point((int)Circle.Center.X, (int)Circle.Center.Y);
+
+            g.DrawEllipse(new Pen(Brushes.Black, 1), new Rectangle(PositionCenter1, Size1));
         }
 
         public override void OnKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if (e.KeyValue == 'W' || e.KeyValue == 'w')
-            {
-                MoveDirection.j = -1;
-            }
-
-            if (e.KeyValue == 'S' || e.KeyValue == 's')
-            {
-                MoveDirection.j = 1;
-            }
-
-            if (e.KeyValue == 'A' || e.KeyValue == 'a')
-            {
-                MoveDirection.i = -1;
-            }
-
-            if (e.KeyValue == 'D' || e.KeyValue == 'd')
-            {
-                MoveDirection.i = 1;
-            }
         }
 
         public override void OnKeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
@@ -68,15 +54,6 @@ namespace VPSeminarska.GameLogic.Player
 
         public override void OnKeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if (e.KeyValue == 'W' || e.KeyValue == 'w' || e.KeyValue == 'S' || e.KeyValue == 's')
-            {
-                MoveDirection.j = 0;
-            }
-
-            if (e.KeyValue == 'A' || e.KeyValue == 'a' || e.KeyValue == 'D' || e.KeyValue == 'd')
-            {
-                MoveDirection.i = 0;
-            }
         }
 
         public override void OnClick(object sender, System.Windows.Forms.MouseEventArgs e)
