@@ -151,5 +151,9 @@ namespace VPSeminarska.Libraries.MathLib
         {
             return new PointF((float)X, (float)Y);
         }
+
+        public Vector2D Clone() {
+            return new Vector2D(X, Y); 
+        }
     }
 }

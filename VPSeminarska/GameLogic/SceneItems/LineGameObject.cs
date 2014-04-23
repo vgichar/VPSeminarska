@@ -9,39 +9,31 @@ using VPSeminarska.Abstracts;
 using VPSeminarska.Libraries;
 using VPSeminarska.Libraries.MathLib;
 
-namespace VPSeminarska.GameLogic.Player
+namespace VPSeminarska.GameLogic.SceneItems
 {
-    public class PlayerGameObject : GameObject
+    class LineGameObject : GameObject
     {
-        public const double Gravity = 2000;
-        public Size Size { get; set; }
-        public Circle Circle { get; set; }
-        public bool InAir { get; set; }
-        public bool UseGravity { get; set; }
-        public double Mass { get; set; }
+        private Pen _penCbT2;
+        public Line2D Line { get; set; }
 
-        public Vector2D Speed { get; set; }
         public Vector2D MoveDirection { get; set; }
 
-        public PlayerGameObject(Form f, Scene Scene)
-            : base(f, Scene)
+        public LineGameObject(Form f, Scene s, Line2D Line)
+            : base(f, s)
         {
-            Circle = new Circle(new Point(180, 0), 25);
-            Speed = new Vector2D(300, 500);
-            MoveDirection = new Vector2D(0, 0);
-            InAir = true;
-            Size = new Size((int)Circle.Radius * 2, (int)Circle.Radius * 2);
+            this.Line = Line;
+            this.MoveDirection = new Vector2D(0, 0);
+            _penCbT2 = new Pen(Brushes.Black, 2);
         }
 
-        public override void Paint(Graphics g, System.Windows.Forms.Form f)
+        public override void Paint(System.Drawing.Graphics g, Form f)
         {
             base.Paint(g, f);
 
-            Circle.Center = ((MoveDirection * Time.deltaTime) + Circle.Center).GetPointF();
+            Line.Start = new PointF((float)(Line.Start.X + (MoveDirection.X * Time.deltaTime)), (float)(Line.Start.Y + (MoveDirection.Y * Time.deltaTime)));
+            Line.End = new PointF((float)(Line.End.X + (MoveDirection.X * Time.deltaTime)), (float)(Line.End.Y + (MoveDirection.Y * Time.deltaTime)));
 
-            Point PositionCenter = new Point((int)Circle.Center.X - Size.Width / 2, (int)Circle.Center.Y - Size.Height / 2);
-
-            g.DrawEllipse(new Pen(Brushes.Black, 1), new Rectangle(PositionCenter, Size));
+            g.DrawLine(_penCbT2, Line.Start, Line.End);
         }
 
         public override void OnKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)

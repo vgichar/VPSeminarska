@@ -1,17 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using VPSeminarska.Abstracts;
+using VPSeminarska.GameLogic.Player;
 
 namespace VPSeminarska.GameLogic
 {
-    public class Scene1 : Scene
+    public class Level : Scene
     {
-        public Scene1(Form f):base(f) {
-        
+        public Level(Form f):base(f) {
+        }
+
+        public override void Paint(Graphics g, Form f)
+        {
+            base.Paint(g, f);
         }
 
         public override void OnKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)

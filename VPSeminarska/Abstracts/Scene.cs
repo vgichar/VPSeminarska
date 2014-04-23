@@ -21,7 +21,7 @@ namespace VPSeminarska.Abstracts
             BindEvents();
         }
 
-        public void Paint(Graphics g, Form f)
+        public virtual void Paint(Graphics g, Form f)
         {
             Graphics = g;
             Form = f;

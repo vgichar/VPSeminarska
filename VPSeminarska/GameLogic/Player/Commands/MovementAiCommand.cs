@@ -5,61 +5,50 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using VPSeminarska.Abstracts;
-using VPSeminarska.Abstracts.Interfaces;
-using VPSeminarska.GameLogic.SceneItems;
 using VPSeminarska.Libraries;
 using VPSeminarska.Libraries.MathLib;
 
 namespace VPSeminarska.GameLogic.Player.Commands
 {
-    public class ColisionDetectionCommand : Command
+    public class MovementAICommand : Command
     {
         private PlayerGameObject Player { get; set; }
-        private Scene Scene { get; set; }
 
-        public ColisionDetectionCommand(Form f, GameObject gameObject) : base(f, gameObject) 
+        private bool[] keys;
+
+        public MovementAICommand(Form Form, GameObject gameObject)
+            : base(Form, gameObject)
         {
             Player = gameObject as PlayerGameObject;
-            Scene = Player.Scene as Scene;
+            keys = new bool[255];
         }
 
-        public override void Paint(System.Drawing.Graphics g, System.Windows.Forms.Form f)
+        public override void Paint(System.Drawing.Graphics g, Form f)
         {
             base.Paint(g, f);
-
             this.execute();
         }
 
         public override void execute()
         {
-            Player.InAir = true;
-            
-            foreach (var ob in Scene.GameObjects) {
-                LineGameObject lgo = ob as LineGameObject;
-                if (ob != Player)
-                {
-                    if (Player.MoveDirection.Y > 0
-                        && (Player.Circle.Center.Y + Player.Circle.Radius <= lgo.Line.Start.Y
-                        && Player.Circle.Center.Y + (Player.MoveDirection.Y * Time.deltaTime) + Player.Circle.Radius >= lgo.Line.Start.Y)
-                        && Player.Circle.Center.X > lgo.Line.Start.X
-                        && Player.Circle.Center.X < lgo.Line.End.X
-                        )
-                    Player.InAir = false;
-                }
-            }
+            Player.MoveDirection.X = (Math.Abs(Player.MoveDirection.X) == 0 || !Player.InAir) ? 0 : Player.MoveDirection.X - Player.Speed.X / 100 * (Player.MoveDirection.X / Math.Abs(Player.MoveDirection.X));
+            Player.MoveDirection.Y += PlayerGameObject.Gravity * Time.deltaTime;
 
             if (!Player.InAir)
             {
-                Player.MoveDirection.Y = 0;
+                Player.MoveDirection.Y -= Player.Speed.Y;
+                Player.InAir = true;
             }
         }
 
         public override void undo()
         {
+            Player.MoveDirection = new Vector2D(0, 0);
         }
 
         public override void OnKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
+            keys[e.KeyValue] = true;
         }
 
         public override void OnKeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
@@ -68,6 +57,7 @@ namespace VPSeminarska.GameLogic.Player.Commands
 
         public override void OnKeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
+            keys[e.KeyValue] = false;
         }
 
         public override void OnClick(object sender, System.Windows.Forms.MouseEventArgs e)
