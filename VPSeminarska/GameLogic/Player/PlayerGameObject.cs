@@ -27,7 +27,7 @@ namespace VPSeminarska.GameLogic.Player
             : base()
         {
             Circle = new Circle(new Point(0, 0), 25);
-            Speed = new Vector2D(350, 730);
+            Speed = new Vector2D(350, 700);
             MoveDirection = new Vector2D(0, 0);
             Size = new Size((int)Circle.Radius * 2, (int)Circle.Radius * 2);
             InAir = true;
