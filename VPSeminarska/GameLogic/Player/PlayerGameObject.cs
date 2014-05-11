@@ -1,75 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Drawing;
 using VPSeminarska.Abstracts;
 using VPSeminarska.Libraries;
 using VPSeminarska.Libraries.MathLib;
+
+// a class used to store information and render the game object that the user controls
+// because the user doesn't store any information for himself except when it scores a high score
+// and that data is stored in @Score class in @VPSeminarska.@GameLogic.@Data.@Entities namespace
 
 namespace VPSeminarska.GameLogic.Player
 {
     public class PlayerGameObject : GameObject
     {
         public const double Gravity = 2000;
-        public Size Size { get; set; }
-        public Circle Circle { get; set; }
-        public bool InAir { get; set; }
-        public bool UseGravity { get; set; }
-        public double Mass { get; set; }
 
-        public Vector2D Speed { get; set; }
-        public Vector2D MoveDirection { get; set; }
+        // rendering info
+        public Circle Circle;
+        public Size Size;
 
-        public PlayerGameObject(Form f, Scene Scene)
-            : base(f, Scene)
+        // movement info
+        public Vector2D Speed;
+        public Vector2D MoveDirection;
+        public bool InAir;
+
+        // initialize variables
+        public PlayerGameObject()
+            : base()
         {
-            Circle = new Circle(new Point(180, 0), 25);
-            Speed = new Vector2D(300, 500);
+            Circle = new Circle(new Point(0, 0), 25);
+            Speed = new Vector2D(350, 730);
             MoveDirection = new Vector2D(0, 0);
-            InAir = true;
             Size = new Size((int)Circle.Radius * 2, (int)Circle.Radius * 2);
+            InAir = true;
         }
 
-        public override void Paint(Graphics g, System.Windows.Forms.Form f)
+        public override void Paint(Graphics g)
         {
-            base.Paint(g, f);
+            base.Paint(g);
 
+            // store the updated position based on movement
+            // the center is the pivot point for the rendering
             Circle.Center = ((MoveDirection * Time.deltaTime) + Circle.Center).GetPointF();
 
+            // this center is not the center, but the left top corner of the rendering rectangle
             Point PositionCenter = new Point((int)Circle.Center.X - Size.Width / 2, (int)Circle.Center.Y - Size.Height / 2);
 
+            // render the @Circle that represents the @PlayerGameObject
             g.DrawEllipse(new Pen(Brushes.Black, 1), new Rectangle(PositionCenter, Size));
-        }
-
-        public override void OnKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
-        {
-        }
-
-        public override void OnKeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
-        {
-        }
-
-        public override void OnKeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
-        {
-        }
-
-        public override void OnClick(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-        }
-
-        public override void OnMouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-        }
-
-        public override void OnMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-        }
-
-        public override void OnMouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
         }
     }
 }

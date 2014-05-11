@@ -1,52 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using System.Windows.Forms;
 using VPSeminarska.Abstracts.Interfaces;
+using VPSeminarska.GameLogic.Player;
+using VPSeminarska.Libraries;
+
+// every @Scene object has a lot of @GameObject objects to display
 
 namespace VPSeminarska.Abstracts
 {
-    public abstract class Scene : ICListener
+    public abstract class Scene : BaseObject
     {
-        public Graphics Graphics { get; set; }
-        public Form Form { get; set; }
-        public List<GameObject> GameObjects { get; set; }
+        // We need @ObservableList in order to dynamically assign the parent (this) to every child @GameObject object
+        public ObservableList<GameObject> GameObjects;
 
-        public Scene(Form Form) {
-            this.Form = Form;
-            GameObjects = new List<GameObject>();
-            BindEvents();
+        // initialization
+        public Scene()
+        {
+            this.GameObjects = new ObservableList<GameObject>();
+            this.GameObjects.OnAdd += GameObjects_AddingNew;
         }
 
-        public virtual void Paint(Graphics g, Form f)
+        // when a @GameObject object is added the the list of @GameObject objects
+        // the parent variable is set to this @Scene object - obviously
+        private void GameObjects_AddingNew(object sender, ObservableListOnAddEventArgs e)
         {
-            Graphics = g;
-            Form = f;
-            foreach(GameObject go in GameObjects){
-                go.Paint(g, f);
+            GameObject go = e.Item as GameObject;
+            go.Scene = this;
+        }
+
+        // when this object is initialized each @GameObject child object is initialized too
+        public virtual new void init()
+        {
+            foreach (GameObject go in GameObjects)
+            {
+                go.init();
             }
         }
 
-        public void BindEvents()
+        // used to dislocate objects
+        // every time a @Scene object is initialized the @GameObject objects are added to this object
+        // so every time a @Scene object is destroyed, each child @GameObject object must be destroyed too
+        public virtual new void destroy()
         {
-            Form.KeyDown += OnKeyDown;
-            Form.KeyUp += OnKeyUp;
-            Form.KeyPress += OnKeyPress;
-            Form.MouseClick += OnClick;
-            Form.MouseDown += OnMouseDown;
-            Form.MouseUp += OnMouseUp;
-            Form.MouseMove += OnMouseMove;
+            this.GameObjects.Clear();
         }
 
-        public abstract void OnKeyDown(object sender, KeyEventArgs e);
-        public abstract void OnKeyPress(object sender, KeyPressEventArgs e);
-        public abstract void OnKeyUp(object sender, KeyEventArgs e);
-        public abstract void OnClick(object sender, MouseEventArgs e);
-        public abstract void OnMouseDown(object sender, MouseEventArgs e);
-        public abstract void OnMouseUp(object sender, MouseEventArgs e);
-        public abstract void OnMouseMove(object sender, MouseEventArgs e);
+        // at each iteration of the game loop, each @GameObject object is redrawn
+        // because the @Player is global static resource, he doesn't belong in the @GameObject list,
+        // so his @Paint() method must be invoked separately
+        public virtual new void Paint(Graphics g)
+        {
+            Player.Paint(g);
+            foreach (GameObject go in GameObjects)
+            {
+                go.Paint(g);
+            }
+        }
     }
 }

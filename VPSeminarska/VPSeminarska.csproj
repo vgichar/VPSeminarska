@@ -44,21 +44,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstracts\BaseObject.cs" />
     <Compile Include="Abstracts\Command.cs" />
     <Compile Include="Abstracts\GameObject.cs" />
     <Compile Include="Abstracts\Interfaces\ICListener.cs" />
     <Compile Include="Abstracts\Scene.cs" />
+    <Compile Include="GameLogic\Data\Entities\Score.cs" />
+    <Compile Include="GameLogic\Data\ScoreSerializer.cs" />
+    <Compile Include="GameLogic\HighScoreScene.cs" />
     <Compile Include="GameLogic\MenuScreen.cs" />
     <Compile Include="GameLogic\Player\Commands\ColisionDetectionCommand.cs" />
+    <Compile Include="GameLogic\Player\Commands\HyperJumpCommand.cs" />
     <Compile Include="GameLogic\Player\Commands\MovementAiCommand.cs" />
     <Compile Include="GameLogic\Player\Commands\MovementCommand.cs" />
     <Compile Include="GameLogic\Player\PlayerGameObject.cs" />
-    <Compile Include="GameLogic\Level.cs" />
+    <Compile Include="GameLogic\LevelScene.cs" />
     <Compile Include="GameLogic\SceneItems\LineGameObject.cs" />
-    <Compile Include="GameLogic\SceneItems\PowerUps\TimeLapseCommand.cs" />
+    <Compile Include="GameLogic\Player\Commands\TimeLapseCommand.cs" />
     <Compile Include="GameLogic\SceneItems\SceneItemsCommands\AILineMoveDownCommand.cs" />
     <Compile Include="Libraries\MathLib\Circle.cs" />
     <Compile Include="Libraries\MathLib\Line2D.cs" />
+    <Compile Include="Libraries\ObservableList.cs" />
     <Compile Include="Libraries\Time.cs" />
     <Compile Include="Libraries\MathLib\Vector2D.cs" />
     <Compile Include="MainWindow.cs">
@@ -80,6 +86,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -95,7 +102,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Editor\" />
+    <None Include="Resources\jump.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\hyperjump.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\full-hyperjump.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -37,7 +37,8 @@
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MainWindow";
-            this.Text = "Rock \'n\' Roll";
+            this.Text = "Icy Bubble";
+            this.TransparencyKey = System.Drawing.Color.Lime;
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.ResumeLayout(false);
 

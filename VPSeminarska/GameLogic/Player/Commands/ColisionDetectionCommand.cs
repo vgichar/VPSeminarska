@@ -1,50 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Drawing;
 using VPSeminarska.Abstracts;
-using VPSeminarska.Abstracts.Interfaces;
 using VPSeminarska.GameLogic.SceneItems;
 using VPSeminarska.Libraries;
-using VPSeminarska.Libraries.MathLib;
+
+// this @Command object enables its parent @GameObject object to collide with other objects
 
 namespace VPSeminarska.GameLogic.Player.Commands
 {
-    public class ColisionDetectionCommand : Command
+    public class CollisionDetectionCommand : Command
     {
-        private PlayerGameObject Player { get; set; }
-        private Scene Scene { get; set; }
-
-        public ColisionDetectionCommand(Form f, GameObject gameObject) : base(f, gameObject) 
+        // call execution
+        public override void Paint(Graphics g)
         {
-            Player = gameObject as PlayerGameObject;
-            Scene = Player.Scene as Scene;
-        }
-
-        public override void Paint(System.Drawing.Graphics g, System.Windows.Forms.Form f)
-        {
-            base.Paint(g, f);
-
+            base.Paint(g);
             this.execute();
         }
 
+        // execute business logic - if @Player.Circle bottom side collides with a floor - don't pass through it
         public override void execute()
         {
+            // lets assume that the @Player is in the air, only if he collides with some floor he wont be
             Player.InAir = true;
-            
-            foreach (var ob in Scene.GameObjects) {
+
+            // compare position with every floor for collision
+            foreach (var ob in GameObject.Scene.GameObjects)
+            {
                 LineGameObject lgo = ob as LineGameObject;
-                if (ob != Player)
+                if (lgo != null)
                 {
-                    if (Player.MoveDirection.Y > 0
-                        && (Player.Circle.Center.Y + Player.Circle.Radius <= lgo.Line.Start.Y
-                        && Player.Circle.Center.Y + (Player.MoveDirection.Y * Time.deltaTime) + Player.Circle.Radius >= lgo.Line.Start.Y)
-                        && Player.Circle.Center.X > lgo.Line.Start.X
-                        && Player.Circle.Center.X < lgo.Line.End.X
-                        )
-                    Player.InAir = false;
+                    // if the line is horizontal
+                    // check if the X-axis position of the @Player is between the X-axis position
+                    // of the end points of the line (floor)
+                    // and check if now @Player's bottom side doesn't intersect with the line
+                    // but in the next frame will
+                    // that are the conditions for @Player - @Line (floor) collision
+                    if (lgo.Line.AngleDegrees == 0 || lgo.Line.AngleDegrees == 180)
+                    {
+                        if (Player.MoveDirection.Y > 0
+                            && (Player.Circle.Center.Y + Player.Circle.Radius <= lgo.Line.Start.Y
+                            && Player.Circle.Center.Y + (Player.MoveDirection.Y * Time.deltaTime) + Player.Circle.Radius >= lgo.Line.Start.Y)
+                            && Player.Circle.Center.X > lgo.Line.Start.X - 15
+                            && Player.Circle.Center.X < lgo.Line.End.X + 15
+                            )
+                        {
+                            Player.InAir = false;
+                        }
+                    }
+                    // if the line is vertical (walls)
+                    // get the @Player's movement direction, so we know for which side wall we test for collision
+                    // check if now @Player's left and right side 
+                    // (depends of which wall) doesn't intersect with the wall
+                    // but in the next frame will
+                    // that are the conditions for @Player - @Line (wall) collision
+                    else
+                    {
+                        if (
+                                (Player.MoveDirection.X > 0
+                                && lgo.Line.Start.X > Player.Circle.Center.X
+                                && (
+                                    lgo.Line.Start.X <= Player.Circle.Center.X + Player.Circle.Radius
+                                    || lgo.Line.Start.X <= Player.Circle.Center.X + Player.Circle.Radius + (Player.MoveDirection.X * Time.deltaTime)
+                                    )
+                                )
+                                ||
+                                (Player.MoveDirection.X < 0
+                                && lgo.Line.Start.X < Player.Circle.Center.X
+                                && (
+                                    lgo.Line.Start.X >= Player.Circle.Center.X - Player.Circle.Radius
+                                    || lgo.Line.Start.X >= Player.Circle.Center.X - Player.Circle.Radius + (Player.MoveDirection.X * Time.deltaTime)
+                                    )
+                                )
+                            )
+                        {
+                            Player.MoveDirection.X *= -0.9;
+                        }
+                    }
                 }
             }
 
@@ -52,38 +82,6 @@ namespace VPSeminarska.GameLogic.Player.Commands
             {
                 Player.MoveDirection.Y = 0;
             }
-        }
-
-        public override void undo()
-        {
-        }
-
-        public override void OnKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
-        {
-        }
-
-        public override void OnKeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
-        {
-        }
-
-        public override void OnKeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
-        {
-        }
-
-        public override void OnClick(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-        }
-
-        public override void OnMouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-        }
-
-        public override void OnMouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-        }
-
-        public override void OnMouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
         }
     }
 }
